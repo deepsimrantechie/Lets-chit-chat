@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema(
   {
     fullName: { type: String, required: true },
@@ -8,5 +9,8 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-const usermodel = mongoose.model("user", userSchema);
-export default usermodel;
+
+// Avoid model overwrite by checking if the model exists
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
+export default User;

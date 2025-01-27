@@ -8,7 +8,7 @@ import {
 
 const MessageRoutes = express.Router();
 
-MessageRoutes.get("/users", protectRoute, getUserForSidebar); // Changed to /users for consistency
+MessageRoutes.get("/users", protectRoute, getUserForSidebar);
 MessageRoutes.get("/:id", protectRoute, getMessages);
 MessageRoutes.post("/send/:id", protectRoute, sendMessage);
 

@@ -7,12 +7,13 @@ export const useChtStore = create((set) => ({
   users: [],
   selectedUser: null,
   isUsersLoading: false,
-  isMessagesLoading: false, // Corrected variable name
+  isMessagesLoading: false,
 
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await axiosInstance.get("/messages/user"); // Correct endpoint
+      // Corrected endpoint without repeating '/api'
+      const res = await axiosInstance.get("/messages/users"); // No '/api' here, it's already in the axiosInstance
       set({ users: res.data });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch users.");
@@ -24,7 +25,7 @@ export const useChtStore = create((set) => ({
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
-      const res = await axiosInstance.get(`/api/messages/${userId}`); // Verified path
+      const res = await axiosInstance.get(`/messages/${userId}`); // Same here
       set({ messages: res.data });
     } catch (error) {
       toast.error(error.response?.data?.message || "Error fetching messages");
@@ -33,6 +34,5 @@ export const useChtStore = create((set) => ({
     }
   },
 
-  // Optimize later
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));

@@ -19,7 +19,7 @@ app.use(express.urlencoded({ limit: "20mb", extended: true }));
 // CORS configuration
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow requests from this origin
+    origin: "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -34,6 +34,7 @@ app.use("/api/messages", MessageRoutes);
 
 // API endpoint
 app.get("/", (req, res) => {
+  console.log("API endpoint hit"); // Debugging log
   res.send("API WORKING");
 });
 
@@ -46,7 +47,7 @@ const StartServer = async () => {
     });
   } catch (error) {
     console.error("Error starting the server:", error.message);
-    process.exit(1); // Exit process on failure
+    process.exit(1);
   }
 };
 

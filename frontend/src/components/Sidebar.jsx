@@ -7,7 +7,7 @@ import { useChtStore } from "../store/UseChatstore";
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
     useChtStore();
-  const { onlineUsers } = useAuthStore();
+  const { onlineUsers = [] } = useAuthStore(); // Default to empty array if undefined
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const [error, setError] = useState(null); // Error state for fetching users
 
@@ -24,8 +24,11 @@ const Sidebar = () => {
   }, [getUsers]);
 
   const onlineUserCount = Array.isArray(onlineUsers) ? onlineUsers.length : 0;
+
   const filteredUsers = showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(user._id))
+    ? users.filter(
+        (user) => Array.isArray(onlineUsers) && onlineUsers.includes(user._id)
+      )
     : users;
 
   if (isUsersLoading) return <SidebarSkeleton />;
@@ -85,16 +88,19 @@ const Sidebar = () => {
                   alt={user.name}
                   className="w-12 h-12 object-cover rounded-full"
                 />
-                {onlineUsers.includes(user._id) && (
-                  <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
-                )}
+                {Array.isArray(onlineUsers) &&
+                  onlineUsers.includes(user._id) && (
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
+                  )}
               </div>
 
               {/* User info - only visible on larger screens */}
               <div className="hidden lg:block text-left min-w-0">
                 <div className="font-medium truncate">{user.fullName}</div>
                 <div className="text-sm text-zinc-400">
-                  {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                  {Array.isArray(onlineUsers) && onlineUsers.includes(user._id)
+                    ? "Online"
+                    : "Offline"}
                 </div>
               </div>
             </button>
