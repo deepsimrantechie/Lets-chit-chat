@@ -5,7 +5,7 @@ import ChatContainer from "../components/ChatContainer";
 
 const Homepage = () => {
   // Define the selectedUser state variable
-  const [selectedUser, setSelectedUser] = useState(null);
+  const { selectedUser } = useState(null);
 
   return (
     <div className="h-screen  bg-base-200">
