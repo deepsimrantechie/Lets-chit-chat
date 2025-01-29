@@ -2,8 +2,8 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 
-export const useChtStore = create((set) => ({
-  message: [],
+export const useChtStore = create((set, get) => ({
+  messages: [], // Fixed typo: was "message"
   users: [],
   selectedUser: null,
   isUsersLoading: false,
@@ -12,8 +12,7 @@ export const useChtStore = create((set) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      // Corrected endpoint without repeating '/api'
-      const res = await axiosInstance.get("/messages/users"); // No '/api' here, it's already in the axiosInstance
+      const res = await axiosInstance.get("/messages/users");
       set({ users: res.data });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch users.");
@@ -25,7 +24,7 @@ export const useChtStore = create((set) => ({
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
-      const res = await axiosInstance.get(`/messages/${userId}`); // Same here
+      const res = await axiosInstance.get(`/messages/${userId}`);
       set({ messages: res.data });
     } catch (error) {
       toast.error(error.response?.data?.message || "Error fetching messages");
@@ -34,5 +33,18 @@ export const useChtStore = create((set) => ({
     }
   },
 
-  setSelectedUser: (selectedUser) => set({ selectedUser }),
+  sendMessage: async (messageData) => {
+    const { selectedUser, messages } = get(); // Use messages instead of message
+    try {
+      const res = await axiosInstance.post(
+        `/messages/send/${selectedUser._id}`,
+        messageData
+      ); // Fixed the syntax
+      set({ messages: [...messages, res.data] }); // Fixed messages instead of message
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  },
+
+  setSelectedUser: (selectedUser) => set({ selectedUser }), // Fixed function
 }));
