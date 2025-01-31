@@ -8,19 +8,21 @@ import { formatMessageTime } from "../lib/utils";
 
 const ChatContainer = () => {
   const { messages, getMessages, isMessagesLoading, selectedUser } =
-    useChtStore(); // Fixed variable names
+    useChtStore();
   const { authUser } = useAuthStore();
 
-  console.log(getMessages); // Check if this logs a function
+  console.log("Selected user in ChatContainer:", selectedUser); // Log selected user
+  console.log("Messages in ChatContainer:", messages); // Log messages in state
 
   useEffect(() => {
     if (selectedUser) {
-      console.log("Selected user ID:", selectedUser._id); // Check if the ID is valid
+      console.log("Selected user ID in useEffect:", selectedUser._id); // Log selected user ID
       getMessages(selectedUser._id);
     }
   }, [selectedUser, getMessages]);
 
   if (isMessagesLoading) {
+    console.log("Loading messages..."); // Log while messages are loading
     return (
       <div className="flex-1 flex flex-col overflow-auto">
         <ChatHeader />

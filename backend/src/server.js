@@ -19,7 +19,10 @@ app.use(express.urlencoded({ limit: "20mb", extended: true }));
 // CORS configuration
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173", // Allow the frontend on port 5173
+      "http://localhost:5175", // Allow the frontend on port 5175
+    ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -43,7 +46,7 @@ const StartServer = async () => {
   try {
     await connectDB();
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server running on port ${PORT}`); // Debugging log
     });
   } catch (error) {
     console.error("Error starting the server:", error.message);
