@@ -24,9 +24,15 @@ export const useChtStore = create((set, get) => ({
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
+      console.log("Fetching messages for userId:", userId);
       const res = await axiosInstance.get(`/messages/${userId}`);
+      console.log("Fetched messages:", res.data);
       set({ messages: res.data });
     } catch (error) {
+      console.error(
+        "Error fetching messages:",
+        error.response?.data || error.message
+      );
       toast.error(error.response?.data?.message || "Error fetching messages");
     } finally {
       set({ isMessagesLoading: false });

@@ -15,6 +15,7 @@ const ChatContainer = () => {
 
   useEffect(() => {
     if (selectedUser) {
+      console.log("Selected user ID:", selectedUser._id); // Check if the ID is valid
       getMessages(selectedUser._id);
     }
   }, [selectedUser, getMessages]);
@@ -54,7 +55,7 @@ const ChatContainer = () => {
             </div>
             <div className="chat-header mb-1">
               <time className="text-xs opacity-50 ml-1">
-                {formatMessageTime}
+                {formatMessageTime(message.createdAt)}
               </time>
             </div>{" "}
             <div className="chat-bubble flex flex-col">

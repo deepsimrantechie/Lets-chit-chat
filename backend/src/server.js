@@ -10,7 +10,7 @@ import MessageRoutes from "./routes/MessageRoute.js";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 5000;
 
 // Middleware to handle large payloads
 app.use(express.json({ limit: "20mb" }));

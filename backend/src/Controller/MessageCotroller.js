@@ -1,8 +1,8 @@
 import express from "express";
-import Message from "../models/messagemodal.js";
 import cloudinary from "../config/Cloudinary.js";
 import mongoose from "mongoose"; // Import mongoose
 import User from "../models/usermodel.js";
+import Message from "../models/messagemodal.js";
 
 export const getUserForSidebar = async (req, res) => {
   try {
@@ -18,38 +18,29 @@ export const getUserForSidebar = async (req, res) => {
 };
 
 export const getMessages = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id: userToChatId } = req.params;
-    const senderId = req.user._id;
-    console.log("Sender ID:", senderId); // Debugging log
-    console.log("User to chat ID:", userToChatId); // Debugging log
+    console.log("Fetching messages for userId:", id);
 
-    // Check if senderId and userToChatId are valid ObjectIds
-    if (
-      !mongoose.Types.ObjectId.isValid(senderId) ||
-      !mongoose.Types.ObjectId.isValid(userToChatId)
-    ) {
-      console.log("Invalid ObjectId"); // Debugging log
-      return res.status(400).json({ error: "Invalid user ID" });
+    // Validate the id format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
 
     const messages = await Message.find({
-      $or: [
-        {
-          senderId: mongoose.Types.ObjectId(senderId),
-          receiverId: mongoose.Types.ObjectId(userToChatId),
-        },
-        {
-          senderId: mongoose.Types.ObjectId(userToChatId),
-          receiverId: mongoose.Types.ObjectId(senderId),
-        },
-      ],
-    });
-    console.log("Messages found:", messages); // Debugging log
+      $or: [{ senderId: id }, { receiverId: id }],
+    }).populate("senderId receiverId");
+
+    if (!messages || messages.length === 0) {
+      return res.status(404).json({ message: "No messages found" });
+    }
+
     res.status(200).json(messages);
   } catch (error) {
-    console.log("Error in getMessages controller", error.message);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error fetching messages:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -58,6 +49,7 @@ export const sendMessage = async (req, res) => {
     const { text, image } = req.body;
     const { id: receiverId } = req.params;
     const senderId = req.user._id;
+
     console.log("Sender ID:", senderId); // Debugging log
     console.log("Receiver ID:", receiverId); // Debugging log
     console.log("Message text:", text); // Debugging log
