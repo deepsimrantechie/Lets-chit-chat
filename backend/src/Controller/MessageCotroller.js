@@ -2,7 +2,7 @@ import express from "express";
 import Message from "../models/messagemodal.js";
 import cloudinary from "../config/Cloudinary.js";
 import mongoose from "mongoose"; // Import mongoose
-import User from "../models/userModel.js"; // Import the User model
+import User from "../models/usermodel.js";
 
 export const getUserForSidebar = async (req, res) => {
   try {
